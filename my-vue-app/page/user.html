@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Display</title>
+    <style>
+        .user-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .user {
+            width: 200px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="user-container" id="main"></div>
+    <div class="pagination" id="pagination"></div>
+
+    <script>
+        const USERS_URL = "https://jsonplaceholder.typicode.com/users";
+        const main = document.getElementById("main");
+        const paginationDiv = document.getElementById("pagination");
+
+        let currentPage = 1;
+        const usersPerPage = 10; // Change this value to set users per page
+        const totalUsers = 100; // Total number of users to display
+
+        // Get initial users
+        getUsers(USERS_URL);
+
+        async function getUsers(url) {
+            try {
+                const response = await fetch(url);
+                const users = await response.json();
+                displayUsers(users);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        }
+
+        function displayUsers(users) {
+            main.innerHTML = "";
+
+            const startIndex = (currentPage - 1) * usersPerPage;
+            const endIndex = Math.min(startIndex + usersPerPage, totalUsers);
+            const displayedUsers = users.slice(startIndex, endIndex);
+
+            displayedUsers.forEach(user => {
+                const { id, name, email, address } = user;
+
+                const userEl = document.createElement("div");
+                userEl.classList.add("user");
+
+                userEl.innerHTML = `
+          <h3>User ID: ${id}</h3>
+          <p>Name: ${name}</p>
+          <p>Email: ${email}</p>
+          <p>Address: ${address.city}, ${address.street}, ${address.suite}</p>
+        `;
+
+                main.appendChild(userEl);
+            });
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(totalUsers / usersPerPage);
+            paginationDiv.innerHTML = "";
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement("button");
+                button.textContent = i;
+                button.addEventListener("click", () => {
+                    currentPage = i;
+                    getUsers(USERS_URL);
+                });
+                paginationDiv.appendChild(button);
+            }
+        }
+    </script>
+</body>
+
+</html>

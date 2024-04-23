@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photos Display</title>
+    <style>
+        .photo-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .photo {
+            width: 200px;
+            margin-bottom: 20px;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="photo-container" id="main"></div>
+    <div class="pagination" id="pagination"></div>
+
+    <script>
+        const PHOTOS_URL = "https://jsonplaceholder.typicode.com/photos";
+        const main = document.getElementById("main");
+        const paginationDiv = document.getElementById("pagination");
+
+        let currentPage = 1;
+        const photosPerPage = 20; // Change this value to set photos per page
+        const totalPhotos = 500; // Total number of photos to display
+
+        // Get initial photos
+        getPhotos(PHOTOS_URL);
+
+        async function getPhotos(url) {
+            try {
+                const response = await fetch(url);
+                const photos = await response.json();
+                displayPhotos(photos);
+            } catch (error) {
+                console.error("Error fetching photos:", error);
+            }
+        }
+
+        function displayPhotos(photos) {
+            main.innerHTML = "";
+
+            const startIndex = (currentPage - 1) * photosPerPage;
+            const endIndex = Math.min(startIndex + photosPerPage, totalPhotos);
+            const displayedPhotos = photos.slice(startIndex, endIndex);
+
+            displayedPhotos.forEach(photo => {
+                const { id, title, thumbnailUrl } = photo;
+
+                const photoEl = document.createElement("div");
+                photoEl.classList.add("photo");
+
+                photoEl.innerHTML = `
+          <h3>Photo ID: ${id}</h3>
+          <p>Title: ${title}</p>
+          <img src="${thumbnailUrl}" alt="${title}">
+        `;
+
+                main.appendChild(photoEl);
+            });
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(totalPhotos / photosPerPage);
+            paginationDiv.innerHTML = "";
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement("button");
+                button.textContent = i;
+                button.addEventListener("click", () => {
+                    currentPage = i;
+                    getPhotos(PHOTOS_URL);
+                });
+                paginationDiv.appendChild(button);
+            }
+        }
+    </script>
+</body>
+
+</html>

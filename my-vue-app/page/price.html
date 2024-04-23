@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    clifford: '#da373d',
+                }
+            }
+        }
+    }
+</script>
+
+<body>
+    <header></header>
+
+    <div class="container mx-auto py-8 max-w-screen-xl">
+        <div class="block md:grid-cols-2 gap-8">
+            <div class="box_price-1">
+                <h1 class="text-2xl font-semibold">
+                    Eng qimmat tovarlar</h1>
+                <div class="product_blocks grid grid-cols-5" id="prace-for-expensive"></div>
+            </div>
+            <div class="box_price-2">
+                <h1 class="text-2xl  font-semibold">
+                    Eng arzon tovarlar</h1>
+                <div class="product_blocks grid grid-cols-5" id="prace-for-cheaper"></div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+    </main>
+
+    <script type="module" src="../component/geader.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/price.js"></script>
+</body>
+
+</html>

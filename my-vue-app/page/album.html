@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albums Display</title>
+</head>
+
+<body>
+    <div id="main"></div>
+    <div id="pagination"></div>
+
+    <script>
+        const API_URL = "https://jsonplaceholder.typicode.com/albums";
+        const main = document.getElementById("main");
+        const paginationDiv = document.getElementById("pagination");
+
+        let currentPage = 1;
+        const albumsPerPage = 10; // Change this value to set albums per page
+
+        // Get initial albums
+        getAlbums(API_URL);
+
+        async function getAlbums(url) {
+            try {
+                const response = await fetch(url);
+                const albums = await response.json();
+                displayAlbums(albums);
+            } catch (error) {
+                console.error("Error fetching albums:", error);
+            }
+        }
+
+        function displayAlbums(albums) {
+            main.innerHTML = "";
+
+            const startIndex = (currentPage - 1) * albumsPerPage;
+            const endIndex = startIndex + albumsPerPage;
+            const displayedAlbums = albums.slice(startIndex, endIndex);
+
+            displayedAlbums.forEach(album => {
+                const { id, title } = album;
+
+                const albumEl = document.createElement("div");
+                albumEl.classList.add("album");
+
+                albumEl.innerHTML = `
+          <h3>Album ID: ${id}</h3>
+          <p>Title: ${title}</p>
+          <hr>
+        `;
+
+                main.appendChild(albumEl);
+            });
+
+            renderPagination(albums.length);
+        }
+
+        function renderPagination(totalAlbums) {
+            const totalPages = Math.ceil(totalAlbums / albumsPerPage);
+            paginationDiv.innerHTML = "";
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement("button");
+                button.textContent = i;
+                button.addEventListener("click", () => {
+                    currentPage = i;
+                    getAlbums(API_URL);
+                });
+                paginationDiv.appendChild(button);
+            }
+        }
+    </script>
+</body>
+
+</html>
